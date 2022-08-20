@@ -7,22 +7,28 @@
 
 
 
-void createTestImage(BitmapTexture *texture, Map &map, float moreWater, int scaleFactor)
+
+void SetColor(BitmapTexture* texture, int x, int y, int scaleFactor, Color color)
+{
+    for (int i = 0; i < scaleFactor; i++) {
+        for (int j = 0; j < scaleFactor; j++) {
+            texture->setColor(color, x * scaleFactor + i, y * scaleFactor + j);
+        }
+    }
+}
+
+void CreateTestImage(BitmapTexture *texture, Map &map, float moreWater, int scaleFactor)
 {
     for (int x = 0; x < map.GetW(); x++) {
         for (int y = 0; y < map.GetH(); y++) {
             Color color;
             if (map.GetCell(x, y)._type == Map_Cell_Ground) {
-                color = Color(255, 255, 255, 255);
+                color = Color(222, 206, 142, 255);
             }
             else {
-                color = Color(128, 128, 128, 255);
+                color = Color(128, 128, 255, 255);
             }
-            for (int i = 0; i < scaleFactor; i++) {
-                for (int j = 0; j < scaleFactor; j++) {
-                    texture->setColor(color, x * scaleFactor + i, y * scaleFactor + j);
-                }
-            }
+            SetColor(texture, x, y, scaleFactor, color);
         }
     }
 }
@@ -37,11 +43,17 @@ void GenerateMaps(int offset, int count, float water)
         Map p(GSize2D(width, height));
         p.Random(water);
         BitmapTexture texture(GSize2D(width * scaleFactor, height * scaleFactor));
-        createTestImage(&texture, p, water, scaleFactor);
+        CreateTestImage(&texture, p, water, scaleFactor);
         
-       // texture.DrawLine(GPoint2D(10, 10), GPoint2D(100, 50), __Color(10, 10, 100, 255));
-
-        texture.DrawRect(GRect2D(10, 10, 30, 30), __Color(10, 10, 100, 255));
+        AIMapAnalyzer analyzer(&p);
+        analyzer.AI_helper1();
+        for (int i = 0; i < 2; i++) {
+            auto location = p.CalculateDeployPosition(p.GetRect(), &analyzer);
+            auto rect = p.GetDeployRegion(location);
+            SetColor(&texture, location.x, location.y, scaleFactor, Color(255, 0, 0, 255));
+            texture.DrawRect(GRect2D(rect.getX() * scaleFactor, rect.getY() * scaleFactor, rect.getW() * scaleFactor, rect.getH() * scaleFactor), Color(0, 0, 0, 255));
+            p._landedPlayers.push_back(location);
+        }
 
         printf("Saving PNG\n");
         std::string name = "result";

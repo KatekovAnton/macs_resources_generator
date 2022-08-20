@@ -2,6 +2,7 @@
 #define Geometry_h
 
 #include <vector>
+#include <functional>
 
 
 
@@ -71,6 +72,53 @@ typedef struct __Color
 } Color;
 
 
+static __inline__ GPoint2D
+GPoint2DMult(const GPoint2D& v, const float s)
+{
+    return GPoint2D(v.x * s, v.y * s);
+}
+
+static __inline__ GPoint2D
+GPoint2DAdd(const GPoint2D& v1, const GPoint2D& v2)
+{
+    return GPoint2D(v1.x + v2.x, v1.y + v2.y);
+}
+
+static __inline__ GPoint2D
+GPoint2DSub(const GPoint2D& v1, const GPoint2D& v2)
+{
+    return GPoint2D(v1.x - v2.x, v1.y - v2.y);
+}
+
+static __inline__ float
+GPoint2DDot(const GPoint2D& v1, const GPoint2D& v2)
+{
+    return v1.x * v2.x + v1.y * v2.y;
+}
+
+static __inline__ float
+GPoint2DLengthSQ(const GPoint2D& v)
+{
+    return GPoint2DDot(v, v);
+}
+
+static __inline__ float
+GPoint2DLength(const GPoint2D& v)
+{
+    return sqrtf(GPoint2DLengthSQ(v));
+}
+
+static __inline__ float
+GPoint2DDistance(const GPoint2D& p1, const GPoint2D& p2)
+{
+    return GPoint2DLength(GPoint2DSub(p1, p2));
+}
+
+static __inline__ float
+GPoint2DDistanceSQ(const GPoint2D& p1, const GPoint2D& p2)
+{
+    return GPoint2DLengthSQ(GPoint2DSub(p1, p2));
+}
 
 struct __GSize2D {
     float width;
@@ -187,12 +235,33 @@ static __inline__ BoundingBox BoundingBoxMake(GRect2D rect) {
     return result;
 };
 
-
+GRect2D RectWithCenterAndRadius(GPoint2D center, float radius);
 
 class GUtils {
 public:
     static std::vector<GPoint2D> CalculateLine(const GPoint2D &from, const GPoint2D &to);
     static GRect2D ClampRectToOuterRect(const GRect2D &rect, const GRect2D &outerRect);
+};
+
+
+static __inline__ bool GRect2DContainsPointInt(const GRect2D& rect, const GPoint2D& point)
+{
+    return ((int)point.x >= (int)rect.origin.x &&
+        (int)point.y >= (int)rect.origin.y &&
+        (int)point.x < (int)(rect.origin.x + rect.size.width) &&
+        (int)point.y < (int)(rect.origin.y + rect.size.height));
+}
+
+class AIUtils {
+
+public:
+
+    static GRect2D ExpandRect(const GRect2D& rect, float expand);
+    static std::vector<GPoint2D> GetPossiblePointsAroundPoint(const GPoint2D& point, const GRect2D& inRect, std::function<bool(const GPoint2D&)> checFunction, int maximumNumber, int checkCount);
+    static GRect2D ClampRectToArea(const GRect2D& rect, const GRect2D& area);
+    static GRect2D RectFromBoundingBox(const BoundingBox& bb);
+    static float GetIntersectionArea(const BoundingBox& f, const BoundingBox& s);
+    static float GetIntersectionArea(const GRect2D& first, const GRect2D& second);
 };
 
 #endif
