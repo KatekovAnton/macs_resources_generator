@@ -51,6 +51,26 @@ void BitmapTexture::DrawLine(const GPoint2D &from, const GPoint2D &to, const Col
     }
 }
 
+void BitmapTexture::DrawRect(const GRect2D& rect, const Color& color)
+{
+    DrawLine(
+        GPoint2D(rect.getX(), rect.getY()), 
+        GPoint2D(rect.getX(), rect.getY() + rect.getH()), 
+        color);
+    DrawLine(
+        GPoint2D(rect.getX(), rect.getY() + rect.getH()), 
+        GPoint2D(rect.getX() + rect.getW(), rect.getY() + rect.getH()), 
+        color);
+    DrawLine(
+        GPoint2D(rect.getX() + rect.getW(), rect.getY() + rect.getH()), 
+        GPoint2D(rect.getX() + rect.getW(), rect.getY()),
+        color);
+    DrawLine(
+        GPoint2D(rect.getX() + rect.getW(), rect.getY()),
+        GPoint2D(rect.getX(), rect.getY()), 
+        color);
+}
+
 inline void setRGB(png_byte *ptr, const Color &c)
 {
     ptr[0] = c.r; ptr[1] = c.g; ptr[2] = c.b;

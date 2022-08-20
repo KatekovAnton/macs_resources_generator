@@ -21,6 +21,7 @@ public:
     Color *getColorBuffer();
     
     void DrawLine(const GPoint2D &from, const GPoint2D &to, const Color &color);
+    void DrawRect(const GRect2D& rect, const Color& color);
     
     void Save(const std::string &filename, const std::string &title);
 };

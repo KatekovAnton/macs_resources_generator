@@ -7,15 +7,12 @@
 
 
 
-void createTestImage(BitmapTexture *texture, float moreWater, int scaleFactor)
+void createTestImage(BitmapTexture *texture, Map &map, float moreWater, int scaleFactor)
 {
-    PerlinNoise p(rand());
-    for (int x = 0; x < texture->getSize().width / scaleFactor; x++) {
-        for (int y = 0; y < texture->getSize().height / scaleFactor; y++) {
-            float n = p.noise((float)x / 30, (float)y / 30, 1);
-            n -= moreWater;
+    for (int x = 0; x < map.GetW(); x++) {
+        for (int y = 0; y < map.GetH(); y++) {
             Color color;
-            if (n > 0.5) {
+            if (map.GetCell(x, y)._type == Map_Cell_Ground) {
                 color = Color(255, 255, 255, 255);
             }
             else {
@@ -37,10 +34,14 @@ void GenerateMaps(int offset, int count, float water)
     int scaleFactor = 10;
     for (int i = offset; i < offset + count; i++) {
         printf("Creating Image\n");
+        Map p(GSize2D(width, height));
+        p.Random(water);
         BitmapTexture texture(GSize2D(width * scaleFactor, height * scaleFactor));
-        createTestImage(&texture, water, scaleFactor);
+        createTestImage(&texture, p, water, scaleFactor);
         
        // texture.DrawLine(GPoint2D(10, 10), GPoint2D(100, 50), __Color(10, 10, 100, 255));
+
+        texture.DrawRect(GRect2D(10, 10, 30, 30), __Color(10, 10, 100, 255));
 
         printf("Saving PNG\n");
         std::string name = "result";
