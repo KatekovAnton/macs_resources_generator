@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <functional>
+#include "math.h"
 
 
 
@@ -70,6 +71,41 @@ typedef struct __Color
     }
     
 } Color;
+
+struct __ColorRGB
+{
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+    
+    bool IsNear(unsigned char a1, unsigned char a2) const
+    {
+        return ____max(a1, a2) - ____min(a1, a2)<3;
+    }
+    
+    inline bool operator == (const __Color &color) const
+    {
+        return color.r == r && color.b == b && color.g == g;
+    }
+    
+} typedef ColorRGB;
+
+struct __ColorAlpha
+{
+    unsigned char a;
+    
+    bool IsNear(unsigned char a1, unsigned char a2) const
+    {
+        return ____max(a1, a2) - ____min(a1, a2)<3;
+    }
+    
+    inline bool operator == (const __Color &color) const
+    {
+        return color.a == a;
+    }
+    
+} typedef ColorAlpha;
+
 
 
 static __inline__ GPoint2D

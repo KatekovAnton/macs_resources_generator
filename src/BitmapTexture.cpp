@@ -30,7 +30,18 @@ void BitmapTexture::setColor(float color, int x, int y)
     setColor(Color((unsigned char)(color * 255.0f), (unsigned char)(color * 255.0f), (unsigned char)(color * 255.0f), 255), x, y);
 }
 
-GSize2D BitmapTexture::getSize()
+Color BitmapTexture::getColor(int x, int y) const
+{
+    return _buffer[y * (int)_size.width + x];
+}
+
+Color BitmapTexture::getColor(float x, float y) const
+{
+    // ToDo: interpolation
+    return getColor((int)x, (int)y);
+}
+
+GSize2D BitmapTexture::getSize() const
 {
     return _size;
 }

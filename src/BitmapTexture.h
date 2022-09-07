@@ -17,7 +17,9 @@ public:
     
     void setColor(Color color, int x, int y);
     void setColor(float color, int x, int y);
-    GSize2D getSize();
+    Color getColor(int x, int y) const;
+    Color getColor(float x, float y) const;
+    GSize2D getSize() const;
     Color *getColorBuffer();
     
     void DrawLine(const GPoint2D &from, const GPoint2D &to, const Color &color);

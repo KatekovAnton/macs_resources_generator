@@ -1,5 +1,4 @@
 #include "Geometry.h"
-#include "math.h"
 #include <algorithm>
 
 

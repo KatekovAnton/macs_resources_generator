@@ -8,4 +8,4 @@ endif
 
 .PHONY: configure_project_mac
 configure_project_mac:
-	cd buildXC && cmake -G Xcode ..
+	mkdir -p buildXC && cd buildXC && cmake -G Xcode ..

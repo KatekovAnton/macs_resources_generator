@@ -3,6 +3,8 @@
 #include "BitmapTexture.h"
 #include "NoiseGenerator.h"
 #include "Map.h"
+#include "MPGMapProcessor.h"
+#include "Dispatch/DispatchPrivate.hpp"
 #include <time.h>
 
 
@@ -67,12 +69,17 @@ void GenerateMaps(int offset, int count, float water)
 
 int main(int argc, char **argv)
 {
-    time_t t;
-    srand((unsigned) time(&t));
+    DispatchImpl *dispatch = new DispatchImpl();
+    DispatchPrivate::SetSharedDispatch(dispatch);
+    // time_t t;
+    // srand((unsigned) time(&t));
     
-    GenerateMaps(0, 10, 0);
-    GenerateMaps(10, 10, 0.1);
-    GenerateMaps(20, 10, -0.1);
+    // GenerateMaps(0, 10, 0);
+    // GenerateMaps(10, 10, 0.1);
+    // GenerateMaps(20, 10, -0.1);
+    
+    MPGMapProcessor m;
+    dispatch->FlushMainThread();
     return 0;
 }
 
