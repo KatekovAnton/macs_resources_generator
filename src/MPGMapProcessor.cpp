@@ -21,6 +21,7 @@ MPGMapProcessor::MPGMapProcessor()
         std::string output = file.path().string();
         if (output.substr(output.length() - 4) == ".png" ) {
             fs::remove(output);
+            continue;
         }
         else if (output.substr(output.length() - 4) != ".wrl" ) {
             continue;
@@ -32,7 +33,7 @@ MPGMapProcessor::MPGMapProcessor()
     int finished = 0;
     std::vector<DispatchWork> works;
     for (const auto & file : fs::directory_iterator(path)) {
-        i++;
+        
         if (file.is_directory()) {
             continue;
         }
@@ -41,6 +42,7 @@ MPGMapProcessor::MPGMapProcessor()
         if (pathString.substr(pathString.length() - 4) != ".wrl" ) {
             continue;
         }
+        i++;
         works.push_back([this, path, &finished, i, c](DispatchOperation *o) {
             
             MAXContentMap map;
@@ -76,7 +78,7 @@ MPGMapProcessor::MPGMapProcessor()
             
             mapImage.Save(output, name);
             int fff = finished ++;
-            std::cout << path << " " << fff << "(" << i << ")/" << c <<  std::endl;
+            std::cout << path << " " << fff+1 << "(" << i << ")/" << c <<  std::endl;
         });
     }
     Dispatch::SharedDispatch()->PerformAndWait(works, nullptr);
