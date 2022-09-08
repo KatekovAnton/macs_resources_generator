@@ -263,11 +263,32 @@ Color default_palette[256] =
     { 255, 255, 255, 0}
 };
 
+void SetColorsToDefaultPalette(Color* destination, Color* map, int s, int e)
+{
+    for (int i = s; i <=e; i++)
+    {
+        destination[i] = map[i];
+        destination[i].a = 255;
+    }
+}
+
+void SetMapColorsToDefaultPalette(Color* destination, Color* map)
+{
+    SetColorsToDefaultPalette(destination, map, 96,  102); // 7
+    SetColorsToDefaultPalette(destination, map, 103, 109); // 7
+    SetColorsToDefaultPalette(destination, map, 110, 116); // 7
+    SetColorsToDefaultPalette(destination, map, 117, 122); // 6
+    SetColorsToDefaultPalette(destination, map, 123, 127); // 5
+}
+
 
 
 MAXContentMapImage::MAXContentMapImage(const MAXContentMap &map)
 :BitmapTexture(GSize2D(map.w * 64, map.h * 64))
 {
+    Color palette[256];
+    memcpy(palette, default_palette, sizeof(palette));
+    SetMapColorsToDefaultPalette(palette, map.palette);
     for (int xc = 0; xc < map.w * 64; xc ++) {
         for (int yc = 0; yc < map.h * 64; yc ++) {
      
@@ -279,7 +300,7 @@ MAXContentMapImage::MAXContentMapImage(const MAXContentMap &map)
             
             int tileIndex = static_cast<int>(map.map[blockY * map.w + blockX]);
             int colorIndex = map.mapElements[tileIndex * 64 * 64 + blockPixelY * 64 + blockPixelX];
-            Color pixelColor = map.palette[colorIndex];
+            Color pixelColor = palette[colorIndex];
             setColor(pixelColor, xc, yc);
         }
     }
