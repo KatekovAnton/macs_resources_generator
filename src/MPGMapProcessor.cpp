@@ -43,11 +43,11 @@ MPGMapProcessor::MPGMapProcessor()
             continue;
         }
         i++;
-        works.push_back([this, path, &finished, i, c](DispatchOperation *o) {
+        works.push_back([this, path, pathString, &finished, i, c](DispatchOperation *o) {
             
             MAXContentMap map;
             {
-                BinaryReader br(path);
+                BinaryReader br(pathString);
                 ByteBuffer bb(br.GetLength() + 1);
                 br.ReadBuffer(br.GetLength(), reinterpret_cast<char *>(bb.getPointer()));
                 bb.dataAppended(br.GetLength());
@@ -71,7 +71,7 @@ MPGMapProcessor::MPGMapProcessor()
             
             std::string output = path.string();
             output = output.substr(0, output.length() - 4) + ".png";
-            std::string name = path.filename();
+            std::string name = path.filename().string();
             if (fs::exists(output)) {
                 fs::remove(output);
             }
