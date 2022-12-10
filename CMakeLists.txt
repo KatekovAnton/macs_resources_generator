@@ -4,7 +4,7 @@ set(PROJECT_NAME macs_resource_generator)
 set(TARGET_NAME ${PROJECT_NAME})
 project(${PROJECT_NAME} C CXX)
 
-
+add_subdirectory(anyoption)
 
 IF(APPLE)
     SET (PROJECT_OS_MACOS TRUE BOOL INTERNAL)
@@ -99,4 +99,5 @@ if (PROJECT_OS_MACOS)
     
 endif()
 
+target_link_libraries(${PROJECT_NAME} anyoption)
 target_link_libraries(${PROJECT_NAME} ${LIBPNG_LINK_FLAGS})

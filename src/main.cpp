@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <iostream>
+#include <filesystem>
 #include "BitmapTexture.h"
 #include "NoiseGenerator.h"
 #include "Map.h"
 #include "MPGMapProcessor.h"
 #include "Dispatch/DispatchPrivate.hpp"
 #include <time.h>
-
+#include "anyoption/anyoption.h"
 
 
 
@@ -69,6 +70,47 @@ void GenerateMaps(int offset, int count, float water)
 
 int main(int argc, char **argv)
 {
+    AnyOption* opt = new AnyOption();
+    opt->setVerbose();
+    opt->autoUsagePrint(true);
+    opt->addUsage("Tool usage: ");
+    opt->addUsage(" -h  --help  		Prints this help ");
+    opt->addUsage(" -d  --dir <directory>	Maps directory");
+
+    opt->setFlag(
+        "help",
+        'h');
+    opt->setOption(
+        "dir",
+        'd');
+    opt->processCommandArgs(argc, argv);
+    if (!opt->hasOptions()) {
+        std::cout << "Directory is not provided";
+        opt->printUsage();
+        delete opt;
+        return 1;
+    }
+    std::string folder;
+    if (opt->getFlag("help") || opt->getFlag('h')) {
+        opt->printUsage();
+    }
+    if (opt->getValue('d') != NULL || opt->getValue("dir") != NULL) {
+        folder = opt->getValue('d');
+    }
+    if (folder.length() == 0) {
+        std::cout << "Directory is not provided";
+        opt->printUsage();
+        delete opt;
+        return 1;
+    }
+    if (!std::filesystem::exists(folder) || 
+        !std::filesystem::is_directory(folder)) {
+        std::cout << "-d --dir should point on the folder with wrl files";
+        opt->printUsage();
+        delete opt;
+        return 1;
+    }
+
     DispatchImpl *dispatch = new DispatchImpl();
     DispatchPrivate::SetSharedDispatch(dispatch);
     // time_t t;
@@ -78,8 +120,10 @@ int main(int argc, char **argv)
     // GenerateMaps(10, 10, 0.1);
     // GenerateMaps(20, 10, -0.1);
     
-    MPGMapProcessor m;
+    MPGMapProcessor m(folder);
     dispatch->FlushMainThread();
+
+    delete opt;
     return 0;
 }
 
