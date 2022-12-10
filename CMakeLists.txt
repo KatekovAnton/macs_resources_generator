@@ -1,10 +1,18 @@
-cmake_minimum_required(VERSION 3.5.1)
+cmake_minimum_required(VERSION 3.14.0)
 set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_NAME macs_resource_generator)
 set(TARGET_NAME ${PROJECT_NAME})
 project(${PROJECT_NAME} C CXX)
 
 add_subdirectory(anyoption)
+add_subdirectory(zlib)
+set(PNG_SHARED OFF CACHE BOOL "Build shared lib" FORCE)
+set(PNG_TESTS OFF CACHE BOOL "Build libpng tests" FORCE)
+set(PNG_BUILD_ZLIB ON CACHE BOOL "Custom zlib Location, else find_package is used" FORCE)
+set(SKIP_INSTALL_ALL 1)
+set(ZLIB_INCLUDE_DIR ${zlib_SOURCE_DIR} ${zlib_BINARY_DIR})
+set(ZLIB_LIBRARY zlibstatic)
+add_subdirectory(libpng)
 
 IF(APPLE)
     SET (PROJECT_OS_MACOS TRUE BOOL INTERNAL)
@@ -21,23 +29,7 @@ ENDIF (UNIX AND NOT APPLE)
 include_directories("${PROJECT_SOURCE_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}")
 
-if (NOT DEFINED LIBPNG_INCLUDE_DIRS)
 
-    # search for pkg-config
-    include (FindPkgConfig)
-    if (NOT PKG_CONFIG_FOUND)
-        message (FATAL_ERROR "pkg-config not found")
-    endif ()
-
-    # check for libpng
-    pkg_check_modules (LIBPNG libpng16 REQUIRED)
-    if (NOT LIBPNG_FOUND)
-        message(FATAL_ERROR "You don't seem to have libpng16 development libraries installed")
-    else ()
-        
-    endif ()
-
-endif()
 
 include_directories (${LIBPNG_INCLUDE_DIRS})
 link_directories (${LIBPNG_LIBRARY_DIRS})
@@ -100,4 +92,10 @@ if (PROJECT_OS_MACOS)
 endif()
 
 target_link_libraries(${PROJECT_NAME} anyoption)
-target_link_libraries(${PROJECT_NAME} ${LIBPNG_LINK_FLAGS})
+target_link_libraries(${PROJECT_NAME} zlibstatic)
+target_link_libraries(${PROJECT_NAME} png_static)
+target_include_directories(${PROJECT_NAME} 
+    PRIVATE
+        ${zlib_SOURCE_DIR} ${zlib_BINARY_DIR}
+        ${libpng_SOURCE_DIR} ${libpng_BINARY_DIR}
+)

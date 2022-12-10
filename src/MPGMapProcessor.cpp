@@ -78,7 +78,7 @@ MPGMapProcessor::MPGMapProcessor(const std::string &path)
             
             mapImage.Save(output, name);
             int fff = finished ++;
-            std::cout << path << " " << fff+1 << "(" << i << ")/" << c <<  std::endl;
+            std::cout << "Finished " << name << " " << fff + 1 << "(" << i << ")/" << c << std::endl;
         });
     }
     Dispatch::SharedDispatch()->PerformAndWait(works, nullptr);

@@ -123,6 +123,7 @@ int main(int argc, char **argv)
     MPGMapProcessor m(folder);
     dispatch->FlushMainThread();
 
+    std::cout << "Gotovo!";
     delete opt;
     return 0;
 }
