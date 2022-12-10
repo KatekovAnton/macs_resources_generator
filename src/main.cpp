@@ -76,7 +76,6 @@ int main(int argc, char **argv)
     opt->addUsage("Tool usage: ");
     opt->addUsage(" -h  --help  		Prints this help ");
     opt->addUsage(" -d  --dir <directory>	Maps directory");
-    opt->addUsage("");
 
     opt->setFlag(
         "help",
@@ -121,7 +120,7 @@ int main(int argc, char **argv)
     // GenerateMaps(10, 10, 0.1);
     // GenerateMaps(20, 10, -0.1);
     
-    MPGMapProcessor m;
+    MPGMapProcessor m(folder);
     dispatch->FlushMainThread();
 
     delete opt;

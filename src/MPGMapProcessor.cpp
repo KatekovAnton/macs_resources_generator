@@ -12,12 +12,12 @@ namespace fs = std::filesystem;
 
 
 
-MPGMapProcessor::MPGMapProcessor()
+MPGMapProcessor::MPGMapProcessor(const std::string &path)
+:_path(path)
 {
-    std::string path = "/Users/antonkatekov/Downloads/maps";
     int i = 0;
     int c = 0;
-    for (const auto & file : fs::directory_iterator(path)) {
+    for (const auto & file : fs::directory_iterator(_path)) {
         std::string output = file.path().string();
         if (output.substr(output.length() - 4) == ".png" ) {
             fs::remove(output);
